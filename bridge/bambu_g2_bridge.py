@@ -38,6 +38,7 @@ class BambuMqttBridge:
         self.last_payload: dict[str, Any] | None = None
         self.loop: asyncio.AbstractEventLoop | None = None
         self.clients: set[web.WebSocketResponse] = set()
+        self.connect_generation = 0
 
     def bind(self, loop: asyncio.AbstractEventLoop, clients: set[web.WebSocketResponse]) -> None:
         self.loop = loop
@@ -45,14 +46,16 @@ class BambuMqttBridge:
 
     def connect(self, printer: dict[str, Any]) -> None:
         self.disconnect()
+        self.connect_generation += 1
+        generation = self.connect_generation
         self.printer = normalize_printer(printer)
         self.set_state("connecting", "Connecting to Bambu MQTT...")
 
         client_id = f"bambu_g2_bridge_{secrets.token_hex(4)}"
         try:
-            client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=client_id)
-        except AttributeError:
-            client = mqtt.Client(client_id=client_id)
+            client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=client_id, protocol=mqtt.MQTTv311)
+        except (AttributeError, TypeError):
+            client = mqtt.Client(client_id=client_id, protocol=mqtt.MQTTv311)
 
         client.username_pw_set(self.printer.get("username") or "bblp", self.printer["accessCode"])
         if self.printer.get("tls", True):
@@ -60,13 +63,17 @@ class BambuMqttBridge:
             client.tls_insecure_set(True)
 
         client.on_connect = self._on_connect
+        client.on_connect_fail = self._on_connect_fail
         client.on_disconnect = self._on_disconnect
         client.on_message = self._on_message
         client.on_subscribe = self._on_subscribe
         client.on_log = self._on_log
+        client.reconnect_delay_set(min_delay=2, max_delay=30)
         self.client = client
         client.connect_async(self.printer["host"], int(self.printer.get("port", 8883)), keepalive=30)
         client.loop_start()
+        if self.loop:
+            self.loop.call_later(15, self._check_connect_timeout, generation)
 
     def disconnect(self) -> None:
         if self.client:
@@ -93,6 +100,7 @@ class BambuMqttBridge:
     def set_state(self, mode: str, message: str) -> None:
         self.mode = mode
         self.message = message
+        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {mode}: {message}", flush=True)
         self.broadcast({"type": "state", "mode": mode, "message": message})
 
     @property
@@ -106,16 +114,24 @@ class BambuMqttBridge:
         return f"device/{self.printer['serial']}/request"
 
     def _on_connect(self, client: mqtt.Client, _userdata: Any, _flags: Any, reason_code: Any, *_args: Any) -> None:
-        if int(reason_code) != 0:
-            self.set_state("error", f"Bambu MQTT connect failed: {reason_code}")
+        reason_value = mqtt_reason_value(reason_code)
+        if reason_value != 0:
+            self.set_state("error", f"Bambu MQTT connect failed: {mqtt_reason_text(reason_code)}")
             return
         self.set_state("connected", "Connected to Bambu printer.")
         client.subscribe(self.report_topic, qos=0)
         self.request_push_all()
 
-    def _on_disconnect(self, _client: mqtt.Client, _userdata: Any, reason_code: Any, *_args: Any) -> None:
-        if int(reason_code) != 0:
-            self.set_state("connecting", "Bambu MQTT disconnected; reconnecting...")
+    def _on_connect_fail(self, _client: mqtt.Client, _userdata: Any) -> None:
+        self.set_state(
+            "error",
+            "Bambu MQTT connect failed. Check printer IP, port 8883, LAN/developer mode, and access code.",
+        )
+
+    def _on_disconnect(self, _client: mqtt.Client, _userdata: Any, *args: Any) -> None:
+        reason_code = mqtt_disconnect_reason(args)
+        if mqtt_reason_value(reason_code) != 0:
+            self.set_state("connecting", f"Bambu MQTT disconnected; reconnecting: {mqtt_reason_text(reason_code)}")
 
     def _on_subscribe(self, _client: mqtt.Client, _userdata: Any, _mid: int, *_args: Any) -> None:
         self.request_push_all()
@@ -131,6 +147,17 @@ class BambuMqttBridge:
 
     def _on_log(self, _client: mqtt.Client, _userdata: Any, _level: int, _buf: str) -> None:
         return
+
+    def _check_connect_timeout(self, generation: int) -> None:
+        if generation != self.connect_generation:
+            return
+        if self.client and self.client.is_connected():
+            return
+        if self.mode == "connecting":
+            self.set_state(
+                "error",
+                "Timed out connecting to Bambu MQTT. Check printer IP, port 8883, LAN/developer mode, and access code.",
+            )
 
     def broadcast(self, payload: dict[str, Any]) -> None:
         if not self.loop:
@@ -400,6 +427,37 @@ async def broadcast(clients: set[web.WebSocketResponse], payload: dict[str, Any]
         await ws.send_json(payload)
     for ws in stale:
         clients.discard(ws)
+
+
+def mqtt_reason_value(reason_code: Any) -> int:
+    if reason_code is None:
+        return 0
+    if isinstance(reason_code, int):
+        return reason_code
+    value = getattr(reason_code, "value", None)
+    if isinstance(value, int):
+        return value
+    try:
+        return int(reason_code)
+    except (TypeError, ValueError):
+        text = str(reason_code).strip().lower()
+        if text in {"success", "normal disconnection", "no error"}:
+            return 0
+        return 1
+
+
+def mqtt_reason_text(reason_code: Any) -> str:
+    value = mqtt_reason_value(reason_code)
+    text = str(reason_code).strip()
+    return f"{text} ({value})" if text and text != str(value) else str(value)
+
+
+def mqtt_disconnect_reason(args: tuple[Any, ...]) -> Any:
+    if len(args) >= 2:
+        return args[1]
+    if args:
+        return args[0]
+    return 0
 
 
 def load_config(allow_missing: bool = False) -> dict[str, Any]:
