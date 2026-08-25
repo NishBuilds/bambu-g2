@@ -1,0 +1,31 @@
+{
+  "name": "even-bambu-g2",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc && vite build",
+    "build:all": "npm run build",
+    "sim": "evenhub-simulator http://localhost:${PORT:-5175}",
+    "qr": "node scripts/dev-url.mjs --qr",
+    "url": "node scripts/dev-url.mjs",
+    "pack": "node scripts/pack.mjs",
+    "host:url": "node scripts/host-url.mjs",
+    "host:qr": "node scripts/host-url.mjs --qr",
+    "bridge:setup": "python3 bridge/bambu_g2_bridge.py setup",
+    "bridge:start": "python3 bridge/bambu_g2_bridge.py start",
+    "bridge:urls": "python3 bridge/bambu_g2_bridge.py urls",
+    "bridge:install-service": "python3 bridge/install_service.py"
+  },
+  "dependencies": {
+    "@evenrealities/even_hub_sdk": "0.0.14"
+  },
+  "devDependencies": {
+    "@evenrealities/evenhub-cli": "0.1.14",
+    "@evenrealities/evenhub-simulator": "0.9.3",
+    "@types/node": "26.2.0",
+    "typescript": "5.9.3",
+    "vite": "8.2.2"
+  }
+}

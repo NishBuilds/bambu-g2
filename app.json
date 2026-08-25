@@ -1,0 +1,24 @@
+{
+  "package_id": "com.nishbuilds.bambug2",
+  "name": "Bambu G2",
+  "version": "0.1.0",
+  "edition": "202601",
+  "min_app_version": "2.2.9",
+  "min_sdk_version": "0.0.14",
+  "entrypoint": "index.html",
+  "permissions": [
+    {
+      "name": "network",
+      "desc": "Connects to a local Bambu printer bridge configured by the user.",
+      "whitelist": [
+        "http://localhost:8983",
+        "ws://localhost:8983",
+        "http://127.0.0.1:8983",
+        "ws://127.0.0.1:8983"
+      ]
+    }
+  ],
+  "supported_languages": [
+    "en"
+  ]
+}

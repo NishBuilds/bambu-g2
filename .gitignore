@@ -1,0 +1,8 @@
+node_modules/
+.node_modules-from-template
+.venv/
+__pycache__/
+*.pyc
+dist/
+*.ehpk
+.DS_Store
