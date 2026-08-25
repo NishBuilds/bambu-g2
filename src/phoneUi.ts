@@ -40,7 +40,7 @@ export function setupPhoneUi(state: AppState, actions: PhoneUiActions): () => vo
         <section class="panel settings-panel">
           <div class="title-row">
             <div>
-              <p class="eyebrow">Even G2 App</p>
+              <p class="eyebrow">Printer HUD</p>
               <h1>Bambu G2</h1>
             </div>
             <span class="status-pill" data-mode="${state.connection.mode}">${labelForMode(state.connection.mode)}</span>
@@ -58,7 +58,7 @@ export function setupPhoneUi(state: AppState, actions: PhoneUiActions): () => vo
               <input name="bridgeUrl" autocomplete="off" placeholder="ws://your-server:8983/ws" />
             </label>
             <details>
-              <summary>Advanced direct printer fields</summary>
+              <summary>Optional printer override</summary>
               <div class="advanced-grid">
             <label>
               <span>Printer IP or host</span>

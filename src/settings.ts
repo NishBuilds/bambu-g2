@@ -32,11 +32,12 @@ export function hasMinimumConnectionSettings(settings: PrinterSettings): boolean
 }
 
 function defaultBridgeUrl(): string {
+  const isBridgeHosted = window.location.pathname === '/app' || window.location.pathname.startsWith('/app/')
   if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    if (window.location.host) return `${protocol}//${window.location.host}/ws`
+    if (isBridgeHosted && window.location.host) return `${protocol}//${window.location.host}/ws`
   }
-  return 'ws://localhost:8983/ws'
+  return ''
 }
 
 function settingsFromStorage(): Partial<PrinterSettings> {

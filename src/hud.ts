@@ -76,9 +76,9 @@ function drawSetup(ctx: CanvasRenderingContext2D, state: AppState): void {
   drawText(ctx, 'BAMBU G2', 28, 24, 28, COLORS.text, '700')
   drawText(ctx, state.connection.mode === 'demo' ? 'Demo printer active' : 'Configure printer on phone', 28, 66, 17, COLORS.text, '600')
   drawText(ctx, fit(state.connection.message, 62), 28, 100, 13, COLORS.muted)
-  drawText(ctx, 'Needs printer host, serial, LAN access code, and bridge origin.', 28, 128, 12, COLORS.muted)
-  drawText(ctx, 'Public Even Hub builds cannot whitelist arbitrary LAN IPs.', 28, 150, 12, COLORS.muted)
-  drawFooter(ctx, 'Setup', 'Click demo/connect on phone')
+  drawText(ctx, 'Install the Linux bridge, then enter its WebSocket URL.', 28, 128, 12, COLORS.muted)
+  drawText(ctx, 'Use Demo on the phone to preview without a printer.', 28, 150, 12, COLORS.muted)
+  drawFooter(ctx, 'Setup', 'Use phone to connect or demo')
 }
 
 function drawDashboard(ctx: CanvasRenderingContext2D, state: AppState): void {

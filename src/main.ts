@@ -255,8 +255,22 @@ function handleClick(): void {
 }
 
 function handleDoubleClick(): void {
+  if (state.view === 'setup' || state.view === 'dashboard') {
+    void requestExit()
+    return
+  }
+
   state.view = state.snapshot ? 'dashboard' : 'setup'
   renderAll()
+}
+
+async function requestExit(): Promise<void> {
+  if (!bridge) return
+  try {
+    await bridge.shutDownPageContainer(1)
+  } catch (error) {
+    console.warn('Bambu G2 exit request failed:', error)
+  }
 }
 
 function move(delta: number): void {

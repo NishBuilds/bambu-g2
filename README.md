@@ -2,6 +2,8 @@
 
 Even G2 glasses HUD for Bambu Lab printer status and simple print controls, plus a Linux MQTT bridge for public/user-owned installs.
 
+This is an independent community project and is not affiliated with, endorsed by, or sponsored by Bambu Lab or Even Realities.
+
 ## What It Shows
 
 - Print name, G-code state, progress, estimated minutes left, layer count, and stage.
@@ -46,6 +48,8 @@ http://<linux-server-ip>:8983/app/
 ```text
 ws://<linux-server-ip>:8983/ws
 ```
+
+The `.ehpk` is still useful for Even Hub review and distribution, but the smoothest real-world install is the Plugin Loader URL printed by the bridge. That URL serves the same G2 app bundle from the user's own Linux server, so the app can use the same-origin `/ws` bridge without a hard-coded LAN address.
 
 ## Current Platform Boundary
 
@@ -149,4 +153,18 @@ The output is:
 bambu-g2-v0.1.0.ehpk
 ```
 
-Before public submission, replace the local bridge origin in `app.json` with the exact approved production origin for whatever transport Even Hub and Bambu can support at that point. Do not add personal network addresses to a public build.
+## Even Hub Submission Notes
+
+- Manifest name is `Bambu G2` and is under the 20-character limit.
+- The app requests only `network` permission, for the user-configured local bridge.
+- First launch on glasses renders setup instructions instead of a blank screen.
+- Dashboard/setup double-click asks the system foreground layer to exit.
+- No API keys, Bambu access codes, printer serial numbers, private IPs, or personal hostnames are committed.
+- Privacy policy: [PRIVACY.md](PRIVACY.md)
+
+Suggested first release notes:
+
+```text
+Monitor Bambu Lab printer progress, temperatures, speed, and alerts from Even G2.
+Includes a self-hosted Linux bridge for local MQTT access and basic pause/resume/speed controls.
+```
