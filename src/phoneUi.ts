@@ -47,9 +47,9 @@ export function setupPhoneUi(state: AppState, actions: PhoneUiActions): () => vo
           </div>
 
           <div class="setup-note">
-            <strong>Setup</strong>
-            <span>Install the Linux bridge, run its guided setup, then paste the bridge WebSocket URL here.</span>
-            <a href="${GITHUB_URL}" target="_blank" rel="noreferrer">GitHub install</a>
+            <strong>Get Connected</strong>
+            <span>Install the bridge on Linux or Raspberry Pi, then paste the printed Bridge URL below.</span>
+            <a href="${GITHUB_URL}" target="_blank" rel="noreferrer">Open install guide</a>
           </div>
 
           <form class="settings-form">
@@ -87,6 +87,10 @@ export function setupPhoneUi(state: AppState, actions: PhoneUiActions): () => vo
           </form>
 
           <p class="message"></p>
+          <footer class="credit">
+            <span>Nishad Neelakandan</span>
+            <span>@nishneel</span>
+          </footer>
         </section>
 
         <section class="panel live-panel">

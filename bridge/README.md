@@ -10,6 +10,14 @@ Small Linux bridge for the Bambu G2 Even app. It connects to a Bambu Lab printer
 
 ## Install
 
+One-line install on Linux or Raspberry Pi:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/NishBuilds/bambu-g2/main/scripts/bootstrap-linux.sh | bash
+```
+
+Manual install:
+
 ```bash
 git clone https://github.com/NishBuilds/bambu-g2.git
 cd bambu-g2

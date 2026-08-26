@@ -307,8 +307,15 @@ async def handle_home(request: web.Request) -> web.Response:
       </dl>
     </section>
     <section>
-      <h2>Setup</h2>
-      <p class="muted">Run this on the Linux server, then restart the service:</p>
+      <h2>Phone Setup</h2>
+      <p class="muted">Install Bambu G2 from Even Hub, then paste the Bridge URL above into the phone companion page.</p>
+      <p class="muted">The Plugin Loader URL opens this server-hosted copy of the app and auto-fills the same-origin bridge.</p>
+    </section>
+    <section>
+      <h2>Server Setup</h2>
+      <p class="muted">Fresh install on Linux or Raspberry Pi:</p>
+      <p><code>curl -fsSL https://raw.githubusercontent.com/NishBuilds/bambu-g2/main/scripts/bootstrap-linux.sh | bash</code></p>
+      <p class="muted">Reconfigure this server:</p>
       <p><code>python3 bridge/bambu_g2_bridge.py setup</code></p>
       <p><code>python3 bridge/install_service.py</code></p>
     </section>

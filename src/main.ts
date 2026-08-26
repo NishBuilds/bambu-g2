@@ -17,7 +17,14 @@ import {
   makeDemoSnapshot,
   parseBambuPayload,
 } from './bambuProtocol'
-import { clearSensitiveSettings, hasMinimumConnectionSettings, loadSettings, saveSettings } from './settings'
+import {
+  clearSensitiveSettings,
+  hasMinimumConnectionSettings,
+  loadSettings,
+  loadSettingsFromNativeStorage,
+  saveSettings,
+  saveSettingsToNativeStorage,
+} from './settings'
 import { controlAt, controlCount, renderHudImages, type HudImage } from './hud'
 import { setupPhoneUi } from './phoneUi'
 import type { AppState, BambuSpeedLevel, PrinterClient, PrinterClientEvent } from './types'
@@ -55,7 +62,7 @@ const hudTileHashes = new Map<number, number>()
 let refreshPhoneUi = setupPhoneUi(state, {
   onSaveConnect(settings) {
     state.settings = settings
-    saveSettings(settings)
+    persistSettings(settings)
     connectPrinter()
   },
   onDemo() {
@@ -69,13 +76,18 @@ let refreshPhoneUi = setupPhoneUi(state, {
   },
   onClearAccessCode() {
     state.settings = clearSensitiveSettings(state.settings)
+    persistSettings(state.settings)
     state.commandNotice = 'Access code cleared.'
     renderAll()
   },
 })
 
-void startGlasses()
-if (hasMinimumConnectionSettings(state.settings)) connectPrinter()
+void boot()
+
+async function boot(): Promise<void> {
+  await startGlasses()
+  if (hasMinimumConnectionSettings(state.settings)) connectPrinter()
+}
 
 async function startGlasses(): Promise<void> {
   try {
@@ -84,6 +96,8 @@ async function startGlasses(): Promise<void> {
     console.warn('Even bridge unavailable; phone UI only.', error)
     return
   }
+
+  await restoreNativeSettings()
 
   const startupPage = new CreateStartUpPageContainer({
     containerTotalNum: 5,
@@ -130,6 +144,23 @@ async function startGlasses(): Promise<void> {
   })
 
   renderAll()
+}
+
+async function restoreNativeSettings(): Promise<void> {
+  if (!bridge) return
+  const saved = await loadSettingsFromNativeStorage(bridge)
+  if (!saved) return
+
+  if (hasMinimumConnectionSettings(saved) || !hasMinimumConnectionSettings(state.settings)) {
+    state.settings = saved
+    saveSettings(saved)
+    refreshPhoneUi()
+  }
+}
+
+function persistSettings(settings: typeof state.settings): void {
+  saveSettings(settings)
+  if (bridge) void saveSettingsToNativeStorage(bridge, settings)
 }
 
 function connectPrinter(): void {

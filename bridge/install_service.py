@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from bambu_g2_bridge import load_config, print_urls
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 VENV = PROJECT_ROOT / ".venv"
@@ -49,6 +51,7 @@ WantedBy=default.target
     print("Service install requested.")
     print("Check status with:")
     print("  systemctl --user status bambu-g2-bridge.service --no-pager")
+    print_urls(load_config(allow_missing=True))
 
 
 if __name__ == "__main__":

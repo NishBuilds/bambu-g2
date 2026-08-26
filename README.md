@@ -19,37 +19,49 @@ This is an independent community project and is not affiliated with, endorsed by
 - Alerts and Details: swipe scrolls; double click returns to Dashboard.
 - Long press is unused because Even owns it for ending the foreground software.
 
-## Recommended Public Setup
+## Quick Start
 
-1. Install the Linux bridge from:
+1. Install **Bambu G2** from Even Hub on your phone.
 
-```text
-https://github.com/NishBuilds/bambu-g2
+2. On a Linux server or Raspberry Pi that can reach your printer, run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/NishBuilds/bambu-g2/main/scripts/bootstrap-linux.sh | bash
 ```
 
-2. On the Linux server:
+The installer creates `~/bambu-g2`, installs the Python bridge dependencies, builds the G2 app bundle when `npm` is available, guides you through printer setup, and installs the `bambu-g2-bridge` user service.
+
+3. Enter the values from your Bambu printer's LAN/developer-mode screen:
+
+- printer IP or hostname
+- printer serial number
+- LAN access code
+
+4. Copy the printed Bridge URL into the Bambu G2 phone companion page:
+
+```text
+ws://<linux-server-ip>:8983/ws
+```
+
+5. Save and connect.
+
+The bridge also prints a Plugin Loader URL:
+
+```text
+http://<linux-server-ip>:8983/app/
+```
+
+That URL serves the same G2 app bundle from your own Linux server and automatically points it at the same-origin `/ws` bridge.
+
+If the packaged Even Hub app cannot connect to a private bridge URL because of origin whitelisting on your phone, use the Plugin Loader URL from the bridge. It is the intended local-first path for live printer control.
+
+Manual install is also supported:
 
 ```bash
 git clone https://github.com/NishBuilds/bambu-g2.git
 cd bambu-g2
 scripts/install-linux.sh
 ```
-
-The installer creates a Python venv, installs the bridge dependencies, builds the G2 app bundle when `npm` is available, guides you through printer setup, and installs the `bambu-g2-bridge` user service.
-
-3. Use the bridge's printed Plugin Loader URL, for example:
-
-```text
-http://<linux-server-ip>:8983/app/
-```
-
-4. If you are testing the `.ehpk` package directly, enter the bridge WebSocket URL shown by the bridge:
-
-```text
-ws://<linux-server-ip>:8983/ws
-```
-
-The `.ehpk` is still useful for Even Hub review and distribution, but the smoothest real-world install is the Plugin Loader URL printed by the bridge. That URL serves the same G2 app bundle from the user's own Linux server, so the app can use the same-origin `/ws` bridge without a hard-coded LAN address.
 
 ## Current Platform Boundary
 
@@ -161,6 +173,7 @@ bambu-g2-v0.1.0.ehpk
 - Dashboard/setup double-click asks the system foreground layer to exit.
 - No API keys, Bambu access codes, printer serial numbers, private IPs, or personal hostnames are committed.
 - Privacy policy: [PRIVACY.md](PRIVACY.md)
+- Submission copy: [EVEN_HUB_SUBMISSION.md](EVEN_HUB_SUBMISSION.md)
 
 Suggested first release notes:
 

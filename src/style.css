@@ -217,6 +217,22 @@ summary {
   line-height: 1.45;
 }
 
+.credit {
+  display: grid;
+  gap: 3px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(145, 255, 187, 0.16);
+  color: #9ac8a9;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.credit span:first-child {
+  color: #dfffea;
+  font-weight: 800;
+}
+
 .progress-text {
   font-size: 28px;
 }
