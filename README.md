@@ -29,7 +29,7 @@ This is an independent community project and is not affiliated with, endorsed by
 curl -fsSL https://raw.githubusercontent.com/NishBuilds/bambu-g2/main/scripts/bootstrap-linux.sh | bash
 ```
 
-The installer creates `~/bambu-g2`, installs the Python bridge dependencies, builds the G2 app bundle when `npm` is available, guides you through printer setup, and installs the `bambu-g2-bridge` user service.
+The installer creates `~/bambu-g2`, installs the Python bridge dependencies, guides you through printer setup, and installs the `bambu-g2-bridge` user service. The repository includes the small built app bundle used by the bridge's Plugin Loader, so Node.js is not required for a normal bridge install.
 
 3. Enter the values from your Bambu printer's LAN/developer-mode screen:
 
@@ -165,19 +165,6 @@ The output is:
 bambu-g2-v0.1.0.ehpk
 ```
 
-## Even Hub Submission Notes
+## Privacy
 
-- Manifest name is `Bambu G2` and is under the 20-character limit.
-- The app requests only `network` permission, for the user-configured local bridge.
-- First launch on glasses renders setup instructions instead of a blank screen.
-- Dashboard/setup double-click asks the system foreground layer to exit.
-- No API keys, Bambu access codes, printer serial numbers, private IPs, or personal hostnames are committed.
-- Privacy policy: [PRIVACY.md](PRIVACY.md)
-- Submission copy: [EVEN_HUB_SUBMISSION.md](EVEN_HUB_SUBMISSION.md)
-
-Suggested first release notes:
-
-```text
-Monitor Bambu Lab printer progress, temperatures, speed, and alerts from Even G2.
-Includes a self-hosted Linux bridge for local MQTT access and basic pause/resume/speed controls.
-```
+Bambu G2 is local-first. The app connects only to the bridge URL the user enters, and the bridge connects only to the printer the user configures. See [PRIVACY.md](PRIVACY.md) for details.
