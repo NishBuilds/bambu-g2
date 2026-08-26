@@ -77,8 +77,8 @@ class BambuMqttBridge:
 
     def disconnect(self) -> None:
         if self.client:
-            self.client.loop_stop()
             self.client.disconnect()
+            self.client.loop_stop()
         self.client = None
 
     def publish_command(self, payload: dict[str, Any]) -> None:

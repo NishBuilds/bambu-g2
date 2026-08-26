@@ -39,6 +39,7 @@ WorkingDirectory={PROJECT_ROOT}
 ExecStart={PYTHON} {PROJECT_ROOT / "bridge" / "bambu_g2_bridge.py"} start
 Restart=on-failure
 RestartSec=3
+TimeoutStopSec=15
 
 [Install]
 WantedBy=default.target
