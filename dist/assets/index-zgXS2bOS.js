@@ -11,14 +11,14 @@
 
           <div class="setup-note">
             <strong>Get Connected</strong>
-            <span>Install the bridge on Linux or Raspberry Pi, then paste the printed Bridge URL below.</span>
+            <span>Install the bridge on Linux or Raspberry Pi, then open its Plugin Loader URL or paste the printed Bridge URL below.</span>
             <a href="${un}" target="_blank" rel="noreferrer">Open install guide</a>
           </div>
 
           <form class="settings-form">
             <label>
               <span>Bridge WebSocket URL</span>
-              <input name="bridgeUrl" autocomplete="off" placeholder="ws://your-server:8983/ws" />
+              <input name="bridgeUrl" autocomplete="off" placeholder="Bridge URL from installer" />
             </label>
             <details>
               <summary>Optional printer override</summary>

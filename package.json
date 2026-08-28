@@ -1,6 +1,6 @@
 {
   "name": "even-bambu-g2",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Even G2 HUD and self-hosted Linux bridge for Bambu Lab printer status and controls.",
   "private": true,
   "type": "module",

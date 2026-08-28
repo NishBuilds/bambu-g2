@@ -162,7 +162,7 @@ npm run pack
 The output is:
 
 ```text
-bambu-g2-v0.1.0.ehpk
+bambu-g2-v0.1.1.ehpk
 ```
 
 ## Privacy
